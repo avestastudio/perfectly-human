@@ -46,7 +46,7 @@ a { color: var(--cyan); }
 .bar nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .bar nav a { font: 13px/1 var(--mono); letter-spacing: .14em; color: var(--dim); text-decoration: none; text-transform: uppercase; }
 .bar nav a:hover { color: var(--ink); }
-@media (max-width: 640px) { .bar nav a:not(:last-child) { display: none; } .brand { letter-spacing: .2em; font-size: 15px; } }
+@media (max-width: 640px) { .bar nav a:nth-child(-n+3) { display: none; } .brand { letter-spacing: .2em; font-size: 15px; } }
 
 /* hero */
 .hero { position: relative; min-height: min(92vh, 820px); display: grid; align-items: end; overflow: hidden; }
@@ -143,6 +143,7 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
       <a href="#premise">The game</a>
       <a href="#shots">Screens</a>
       <a href="#report">Report a bug</a>
+      <a href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Download</a>
     </nav>
   </div>
 </header>
@@ -155,8 +156,8 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
       <h1>PERFECTLY HUMAN</h1>
       <p class="tag">6 players. <em>1 AI is among them.</em></p>
       <div class="ctas">
-        <a class="btn primary" href="#trailer">▶ Watch the trailer</a>
-        <a class="btn ghost" href="#report">Report a bug</a>
+        <a class="btn primary" href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Download on itch.io</a>
+        <a class="btn ghost" href="#trailer">▶ Watch the trailer</a>
       </div>
       <p class="meta">Multiplayer game · macOS &amp; Windows · Demo 0.1.0</p>
     </div>
@@ -165,7 +166,7 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
   <section class="trailer" id="trailer">
     <div class="wrap">
       <h2>Trailer</h2>
-      <p class="lede">Can you tell a human from an AI?</p>
+      <p class="lede">Can you tell a human from an AI? Demo on <a href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">itch.io</a>, for macOS and Windows.</p>
       <div class="screen">
         <video id="trailerVideo" controls preload="metadata" poster="img/guilty.jpg" playsinline>
           <source src="media/trailer.mp4" type="video/mp4">
