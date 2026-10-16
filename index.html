@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perfectly Human</title>
+<meta name="description" content="Perfectly Human: a multiplayer game. 2044, sanitary lockdown. 6 players, 1 AI is among them.">
+<meta property="og:title" content="Perfectly Human">
+<meta property="og:description" content="6 players. 1 AI is among them. A multiplayer game by Avesta Studio.">
+<meta property="og:image" content="https://lenarcoss.github.io/perfectly-human/img/hero.jpg">
+<meta name="theme-color" content="#0b0820">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Manrope:wght@400;500;600&display=swap">
+<style>
+/* Layout: a night-time tower seen from outside, then the lit windows (sections) one floor at a time. */
+:root {
+  --night: #0b0820;        /* sky behind the tower */
+  --wall: #151132;         /* section ground */
+  --glass: #1f1946;        /* raised panels, inputs */
+  --ink: #f2efe8;          /* text */
+  --dim: #a9a3c9;          /* secondary text */
+  --neon: #ff78d7;         /* title pink */
+  --amber: #f0b860;        /* window light, speaker names */
+  --cyan: #8ce6ff;         /* system text */
+  --alarm: #ff5a6e;        /* GUILTY red */
+  --display: "Rajdhani", "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  --body: "Manrope", "Avenir Next", system-ui, sans-serif;
+  --mono: "Share Tech Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+body { margin: 0; background: var(--night); color: var(--ink); font: 16px/1.6 var(--body); }
+img, video { max-width: 100%; display: block; }
+a { color: var(--cyan); }
+:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+.wrap { width: min(1120px, 100%); margin: 0 auto; padding-inline: 20px; }
+
+/* top bar */
+.bar { position: fixed; inset: 0 0 auto 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px);
+  background: linear-gradient(var(--night), transparent); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.brand { font: 700 18px/1 var(--display); letter-spacing: .32em; color: var(--ink); text-decoration: none; }
+.bar nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.bar nav a { font: 13px/1 var(--mono); letter-spacing: .14em; color: var(--dim); text-decoration: none; text-transform: uppercase; }
+.bar nav a:hover { color: var(--ink); }
+
+/* hero */
+.hero { position: relative; min-height: min(92vh, 820px); display: grid; align-items: end; overflow: hidden; }
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(11,8,32,.25) 0%, rgba(11,8,32,.1) 40%, var(--night) 96%); }
+.hero .wrap { position: relative; z-index: 1; padding-block: 140px 64px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+.eyebrow { font: 14px/1.4 var(--mono); letter-spacing: .22em; color: var(--dim); text-transform: uppercase; margin: 0; }
+h1 { margin: 0; font: 700 clamp(44px, 9vw, 112px)/.95 var(--display); letter-spacing: .14em; color: var(--neon);
+  text-shadow: 0 0 28px rgba(255,60,190,.55), 0 0 2px rgba(255,120,215,.9); text-wrap: balance; }
+.tag { margin: 0; font: 600 clamp(18px, 2.6vw, 26px)/1.3 var(--display); letter-spacing: .2em; text-transform: uppercase; }
+.tag em { font-style: normal; color: var(--amber); }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 4px; text-decoration: none;
+  font: 700 15px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; border: 1px solid transparent; cursor: pointer; }
+.btn.primary { background: var(--neon); color: #1a0716; box-shadow: 0 0 24px rgba(255,60,190,.45); }
+.btn.primary:hover { background: #ff96e0; }
+.btn.ghost { color: var(--ink); border-color: rgba(242,239,232,.35); background: rgba(11,8,32,.4); }
+.btn.ghost:hover { border-color: var(--ink); }
+.meta { font: 13px/1.4 var(--mono); color: var(--dim); letter-spacing: .1em; margin: 0; }
+
+section { padding-block: 88px; }
+h2 { margin: 0 0 8px; font: 700 clamp(30px, 4.4vw, 46px)/1.05 var(--display); letter-spacing: .12em; text-transform: uppercase; text-wrap: balance; }
+.lede { color: var(--dim); max-width: 62ch; margin: 0; }
+
+/* trailer: letterboxed like the film */
+.trailer { background: #000; }
+.screen { margin-top: 28px; border-radius: 6px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; max-width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.screen video { width: 100%; height: 100%; object-fit: contain; }
+
+/* the premise: a 24 h day in the building */
+.premise { background: var(--wall); }
+.day { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px; margin-top: 40px; border-radius: 6px; overflow: hidden; }
+.slot { background: var(--glass); padding: 24px 22px 26px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.clock { font: 30px/1 var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; }
+.slot.night .clock { color: var(--alarm); }
+.slot h3 { margin: 0; font: 700 20px/1.2 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+.slot p { margin: 0; color: var(--dim); font-size: 15px; }
+
+/* gallery */
+.shots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 36px; }
+.shots figure { margin: 0; position: relative; overflow: hidden; border-radius: 4px; background: var(--glass); grid-column: span 2; }
+.shots figure.wide { grid-column: span 3; }
+.shots img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: transform .6s ease; }
+.shots figure:hover img { transform: scale(1.04); }
+.shots figcaption { position: absolute; left: 10px; bottom: 8px; font: 12px/1 var(--mono); letter-spacing: .14em; color: var(--ink);
+  text-transform: uppercase; text-shadow: 0 1px 6px #000; }
+@media (max-width: 760px) { .shots { grid-template-columns: 1fr 1fr; } .shots figure, .shots figure.wide { grid-column: span 1; } }
+
+/* report form: styled like an in-game notification panel */
+.report { background: var(--wall); }
+.report .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 48px; align-items: start; }
+@media (max-width: 860px) { .report .grid { grid-template-columns: 1fr; gap: 28px; } }
+.notes { display: grid; gap: 10px; margin-top: 26px; }
+.notif { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; background: var(--glass); border-radius: 10px; padding: 12px 14px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 700 14px/1 var(--display); color: #fff; }
+.notif b { display: block; font-size: 14px; }
+.notif span { font-size: 13px; color: var(--dim); }
+form { background: var(--glass); border-radius: 10px; padding: 26px; display: grid; gap: 18px; }
+.kinds { display: flex; gap: 8px; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+.kinds legend { font: 12px/1 var(--mono); letter-spacing: .16em; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; padding: 0; }
+.kinds input { position: absolute; opacity: 0; pointer-events: none; }
+.kinds label { padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(242,239,232,.25); font: 700 14px/1 var(--display); letter-spacing: .16em;
+  text-transform: uppercase; cursor: pointer; color: var(--dim); }
+.kinds input:checked + label { background: var(--neon); border-color: var(--neon); color: #1a0716; }
+.kinds input:focus-visible + label { outline: 2px solid var(--neon); outline-offset: 3px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font: 12px/1 var(--mono); letter-spacing: .16em; color: var(--dim); text-transform: uppercase; }
+.field small { color: var(--dim); font-size: 12px; }
+input[type=text], input[type=email], select, textarea { width: 100%; background: var(--wall); color: var(--ink); border: 1px solid rgba(242,239,232,.16);
+  border-radius: 6px; padding: 12px 14px; font: 15px/1.4 var(--body); }
+textarea { min-height: 130px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: var(--neon); outline: none; }
+.hp { position: absolute; left: -9999px; }
+.send { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.status { font: 14px/1.4 var(--mono); color: var(--dim); }
+.status.ok { color: var(--cyan); }
+.status.err { color: var(--alarm); }
+
+footer { padding-block: 48px 64px; border-top: 1px solid rgba(242,239,232,.08); }
+footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; color: var(--dim); font-size: 14px; }
+footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">PERFECTLY HUMAN</a>
+    <nav aria-label="Sections">
+      <a href="#trailer">Trailer</a>
+      <a href="#premise">The game</a>
+      <a href="#shots">Screens</a>
+      <a href="#report">Report a bug</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <img src="img/hero.jpg" alt="The tower at night, lit windows among the neon city">
+    <div class="wrap">
+      <p class="eyebrow">2044 · Sanitary lockdown</p>
+      <h1>PERFECTLY HUMAN</h1>
+      <p class="tag">6 players. <em>1 AI is among them.</em></p>
+      <div class="ctas">
+        <a class="btn primary" href="#trailer">▶ Watch the trailer</a>
+        <a class="btn ghost" href="#report">Report a bug</a>
+      </div>
+      <p class="meta">Multiplayer game · macOS &amp; Windows · Demo 0.1.0</p>
+    </div>
+  </div>
+
+  <section class="trailer" id="trailer">
+    <div class="wrap">
+      <h2>Trailer</h2>
+      <p class="lede">Can you tell a human from an AI?</p>
+      <div class="screen">
+        <video id="trailerVideo" controls preload="metadata" poster="img/guilty.jpg" playsinline>
+          <source src="media/trailer.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <section class="premise" id="premise">
+    <div class="wrap">
+      <h2>Everyone stays home.<br>Not everyone is real.</h2>
+      <p class="lede">Six residents share a tower during a sanitary lockdown. One of them is an AI trying to pass as human, and trying to replace the others. Talk, watch, accuse, and vote before the lights go out.</p>
+      <div class="day">
+        <div class="slot"><span class="clock">07:40</span><h3>Live your day</h3><p>Messages from the neighbours, a drink from the fridge, a visitor at the door. Act human. Everyone is watching.</p></div>
+        <div class="slot"><span class="clock">14:00</span><h3>Read the signs</h3><p>Who was up at 3 a.m.? Who answers too fast? Who never sleeps? Collect what doesn't add up.</p></div>
+        <div class="slot"><span class="clock">20:00</span><h3>Mandatory meeting</h3><p>The whole building meets. Accuse, defend yourself, vote. Get it wrong and an innocent resident pays.</p></div>
+        <div class="slot night"><span class="clock">03:14</span><h3>Lights out</h3><p>At night the AI moves. Doors get kicked in, the power goes down, and the chat fills with panic.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shots">
+    <div class="wrap">
+      <h2>Screens</h2>
+      <p class="lede">Stills from the trailer, all filmed in the game's own building.</p>
+      <div class="shots">
+        <figure class="wide"><img src="img/party.jpg" alt="Four residents dancing at the neon rooftop pool" loading="lazy"><figcaption>Rooftop pool</figcaption></figure>
+        <figure class="wide"><img src="img/meeting.jpg" alt="Residents pointing at each other in the meeting room" loading="lazy"><figcaption>8 PM meeting</figcaption></figure>
+        <figure><img src="img/morning.jpg" alt="A resident at her bedroom window in the morning" loading="lazy"><figcaption>Morning</figcaption></figure>
+        <figure><img src="img/visitor.jpg" alt="A neighbour at the apartment door" loading="lazy"><figcaption>A visitor</figcaption></figure>
+        <figure><img src="img/guilty.jpg" alt="The GUILTY verdict above the residents" loading="lazy"><figcaption>Verdict</figcaption></figure>
+        <figure><img src="img/kick.jpg" alt="A resident kicking a door open in the floor 6 hallway" loading="lazy"><figcaption>Floor 6</figcaption></figure>
+        <figure><img src="img/police.jpg" alt="Police tape across an open apartment door" loading="lazy"><figcaption>The morning after</figcaption></figure>
+        <figure><img src="img/blackout.jpg" alt="A phone screen: electricity deactivated, 100 percent" loading="lazy"><figcaption>Blackout</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="report" id="report">
+    <div class="wrap grid">
+      <div>
+        <h2>Report a bug</h2>
+        <p class="lede">The demo is early and experimental. Tell us what broke, what felt wrong, or what you would love to see. Every message is read by the team.</p>
+        <div class="notes" aria-hidden="true">
+          <div class="notif"><span class="avatar" style="background:#c0508f">R</span><div><b>Rose (4)</b><span>my door opened by itself??</span></div></div>
+          <div class="notif"><span class="avatar" style="background:#6b62c9">C</span><div><b>Chloe (7)</b><span>the vote froze on my screen</span></div></div>
+          <div class="notif"><span class="avatar" style="background:#4f9a6b">M</span><div><b>Max (5)</b><span>report it. NOW.</span></div></div>
+        </div>
+      </div>
+
+      <form id="reportForm" novalidate>
+        <fieldset class="kinds">
+          <legend>What is it?</legend>
+          <input type="radio" name="type" id="t-bug" value="Bug" checked><label for="t-bug">Bug</label>
+          <input type="radio" name="type" id="t-feedback" value="Feedback"><label for="t-feedback">Feedback</label>
+          <input type="radio" name="type" id="t-idea" value="Idea"><label for="t-idea">Idea</label>
+        </fieldset>
+
+        <div class="row">
+          <div class="field"><label for="f-name">Name or pseudo</label><input type="text" id="f-name" name="name" autocomplete="nickname" maxlength="80"></div>
+          <div class="field"><label for="f-email">Email</label><input type="email" id="f-email" name="email" autocomplete="email" maxlength="120"><small>Optional, only if you want an answer.</small></div>
+        </div>
+
+        <div class="row">
+          <div class="field"><label for="f-platform">Platform</label>
+            <select id="f-platform" name="platform"><option>Windows</option><option>macOS</option><option>Other</option></select></div>
+          <div class="field"><label for="f-version">Version</label>
+            <select id="f-version" name="version"><option>Demo 0.1.0</option><option>I don't know</option></select></div>
+        </div>
+
+        <div class="field"><label for="f-message">What happened?</label>
+          <textarea id="f-message" name="message" required maxlength="5000" placeholder="I was in the 8 PM meeting, I voted for Max, and the screen froze."></textarea></div>
+
+        <div class="field" id="stepsField"><label for="f-steps">How can we make it happen again?</label>
+          <textarea id="f-steps" name="steps" maxlength="3000" placeholder="1. Host a game  2. Wait for 20:00  3. Vote before everyone joins"></textarea>
+          <small>Screenshots help: paste a link (Imgur, Google Drive…) in the text.</small></div>
+
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="send">
+          <button class="btn primary" type="submit" id="sendBtn">Send</button>
+          <span class="status" id="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><b>AVESTA STUDIO</b> · Design Lena Guayroso · Story Scott Carroll</span>
+    <span>Graphics: <a href="https://assetstore.unity.com/publishers/53539" rel="noopener" target="_blank">ithappy assets</a> · 3D hair: McKaneCL, aeo (CC BY 4.0) · Animations: Mixamo</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var ENDPOINT = "https://formsubmit.co/ajax/lenaguayroso@gmail.com";
+  var form = document.getElementById("reportForm");
+  var status = document.getElementById("status");
+  var btn = document.getElementById("sendBtn");
+  var steps = document.getElementById("stepsField");
+
+  function kind() { var c = form.querySelector("input[name=type]:checked"); return c ? c.value : "Bug"; }
+  form.addEventListener("change", function (e) { if (e.target.name === "type") steps.hidden = kind() !== "Bug"; });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = form.message.value.trim();
+    if (msg.length < 5) { status.className = "status err"; status.textContent = "Write a few words about what happened."; form.message.focus(); return; }
+    if (form._honey.value) return;
+    var data = {
+      _subject: "[Perfectly Human] " + kind() + " – " + msg.slice(0, 60),
+      _template: "table",
+      _captcha: "false",
+      type: kind(),
+      name: form.name.value.trim() || "(anonymous)",
+      email: form.email.value.trim() || "(none)",
+      platform: form.platform.value,
+      version: form.version.value,
+      message: msg,
+      steps: kind() === "Bug" ? (form.steps.value.trim() || "(none)") : "(n/a)"
+    };
+    if (form.email.value.trim()) data._replyto = form.email.value.trim();
+    btn.disabled = true; status.className = "status"; status.textContent = "Sending…";
+    fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok || String(res.j.success) !== "true") throw new Error(res.j.message || "error");
+        form.reset(); steps.hidden = false;
+        status.className = "status ok"; status.textContent = "Sent. Thank you, we read every message.";
+      })
+      .catch(function () {
+        status.className = "status err"; status.textContent = "It didn't go through. Check your connection and send again.";
+      })
+      .then(function () { btn.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>
