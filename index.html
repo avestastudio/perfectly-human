@@ -298,8 +298,9 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
         form.reset(); steps.hidden = false;
         status.className = "status ok"; status.textContent = "Sent. Thank you, we read every message.";
       })
-      .catch(function () {
-        status.className = "status err"; status.textContent = "It didn't go through. Check your connection and send again.";
+      .catch(function (err) {
+        var why = err && err.message && err.message !== "error" && err.message !== "Failed to fetch" ? " (" + err.message + ")" : "";
+        status.className = "status err"; status.textContent = "It didn't go through. Check your connection and send again." + why;
       })
       .then(function () { btn.disabled = false; });
   });
