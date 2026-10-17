@@ -279,7 +279,7 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
     if (msg.length < 5) { status.className = "status err"; status.textContent = "Write a few words about what happened."; form.message.focus(); return; }
     if (form._honey.value) return;
     var data = {
-      _subject: "[Perfectly Human] " + kind() + " – " + msg.slice(0, 60),
+      _subject: "[Perfectly Human] " + kind() + ": " + msg.slice(0, 60),
       _template: "table",
       _captcha: "false",
       type: kind(),
