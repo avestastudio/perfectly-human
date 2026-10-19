@@ -4,133 +4,167 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Perfectly Human</title>
-<meta name="description" content="Perfectly Human: a multiplayer game. 2044, sanitary lockdown. 6 players, 1 AI is among them.">
+<meta name="description" content="Perfectly Human: an anonymous multiplayer game. 2044, sanitary lockdown. 6 to 12 residents, 1 to 3 AI hide among them.">
 <meta property="og:title" content="Perfectly Human">
-<meta property="og:description" content="6 players. 1 AI is among them. A multiplayer game by Avesta Studio.">
+<meta property="og:description" content="Up to 12 strangers. Some of them are AI. Play in your browser.">
 <meta property="og:image" content="https://avestastudio.github.io/perfectly-human/img/hero.jpg">
-<meta name="theme-color" content="#0b0820">
+<meta name="theme-color" content="#111111">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Manrope:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Space+Mono:wght@400;700&display=swap">
 <style>
-/* Layout: a night-time tower seen from outside, then the lit windows (sections) one floor at a time. */
 :root {
-  --night: #0b0820;        /* sky behind the tower */
-  --wall: #151132;         /* section ground */
-  --glass: #1f1946;        /* raised panels, inputs */
-  --ink: #f2efe8;          /* text */
-  --dim: #a9a3c9;          /* secondary text */
-  --neon: #ff78d7;         /* title pink */
-  --amber: #f0b860;        /* window light, speaker names */
-  --cyan: #8ce6ff;         /* system text */
-  --alarm: #ff5a6e;        /* GUILTY red */
-  --display: "Rajdhani", "Avenir Next Condensed", "Arial Narrow", sans-serif;
-  --body: "Manrope", "Avenir Next", system-ui, sans-serif;
-  --mono: "Share Tech Mono", ui-monospace, Menlo, monospace;
+  --black: #111111;      /* page ground */
+  --panel: #1e1e1e;      /* cards, inputs */
+  --deep: #0a0a0a;       /* image wells */
+  --line: #3a3a3a;       /* quiet borders */
+  --ink: #f4f0e6;        /* text, strong borders */
+  --dim: #a8a499;        /* secondary text */
+  --yellow: #efdf4a;     /* the only accent */
+  --red: #d93a2b;        /* GUILTY / the AI */
+  --display: "Orbitron", "Arial Black", sans-serif;
+  --mono: "Space Mono", ui-monospace, Menlo, monospace;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
-body { margin: 0; background: var(--night); color: var(--ink); font: 16px/1.6 var(--body); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body { margin: 0; background: var(--black); color: var(--ink); font: 16px/1.6 var(--mono); }
 img, video { max-width: 100%; display: block; }
-a { color: var(--cyan); }
-:focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
-.wrap { width: min(1120px, 100%); margin: 0 auto; padding-inline: 20px; }
+a { color: var(--yellow); }
+:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+.wrap { width: min(1180px, 100%); margin: 0 auto; padding-inline: 20px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 24px; text-decoration: none; cursor: pointer;
+  font: 900 15px/1 var(--display); letter-spacing: .08em; text-transform: uppercase; border: 3px solid var(--ink); color: var(--ink); background: transparent; }
+.btn:hover { background: var(--ink); color: var(--black); }
+.btn.primary { background: var(--yellow); border-color: var(--yellow); color: var(--black); box-shadow: 6px 6px 0 var(--ink); }
+.btn.primary:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--ink); }
+.btn svg { flex: none; }
 
 /* top bar */
-.bar { position: fixed; inset: 0 0 auto 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px);
-  background: linear-gradient(var(--night), transparent); }
-.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
-.brand { font: 700 18px/1 var(--display); letter-spacing: .32em; color: var(--ink); text-decoration: none; }
-.bar nav { display: flex; gap: 22px; flex-wrap: wrap; }
-.bar nav a { font: 13px/1 var(--mono); letter-spacing: .14em; color: var(--dim); text-decoration: none; text-transform: uppercase; }
+.bar { position: sticky; top: 0; z-index: 10; background: var(--black); border-bottom: 2px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+.brand { font: 900 16px/1 var(--display); letter-spacing: .06em; color: var(--ink); text-decoration: none; }
+.bar nav { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+.bar nav a { font: 700 13px/1 var(--mono); letter-spacing: .1em; color: var(--dim); text-decoration: none; text-transform: uppercase; }
 .bar nav a:hover { color: var(--ink); }
-@media (max-width: 640px) { .bar nav a:nth-child(-n+3) { display: none; } .brand { letter-spacing: .2em; font-size: 15px; } }
+.bar nav a.play { color: var(--black); background: var(--yellow); padding: 10px 14px; }
+@media (max-width: 760px) { .bar nav a.hide-sm { display: none; } }
 
 /* hero */
-.hero { position: relative; min-height: min(92vh, 820px); display: grid; align-items: end; overflow: hidden; }
-.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero::after { content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(11,8,32,.25) 0%, rgba(11,8,32,.1) 40%, var(--night) 96%); }
-.hero .wrap { position: relative; z-index: 1; padding-block: 140px 64px; display: grid; gap: 18px; justify-items: center; text-align: center; }
-.eyebrow { font: 14px/1.4 var(--mono); letter-spacing: .22em; color: var(--dim); text-transform: uppercase; margin: 0; }
-h1 { margin: 0; font: 700 clamp(40px, 9vw, 112px)/.95 var(--display); letter-spacing: .14em; overflow-wrap: anywhere; color: var(--neon);
-  text-shadow: 0 0 28px rgba(255,60,190,.55), 0 0 2px rgba(255,120,215,.9); text-wrap: balance; }
-.tag { margin: 0; font: 600 clamp(18px, 2.6vw, 26px)/1.3 var(--display); letter-spacing: .2em; text-transform: uppercase; }
-.tag em { font-style: normal; color: var(--amber); }
-.ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
-.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 4px; text-decoration: none;
-  font: 700 15px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; border: 1px solid transparent; cursor: pointer; }
-.btn.primary { background: var(--neon); color: #1a0716; box-shadow: 0 0 24px rgba(255,60,190,.45); }
-.btn.primary:hover { background: #ff96e0; }
-.btn.ghost { color: var(--ink); border-color: rgba(242,239,232,.35); background: rgba(11,8,32,.4); }
-.btn.ghost:hover { border-color: var(--ink); }
-.meta { font: 13px/1.4 var(--mono); color: var(--dim); letter-spacing: .1em; margin: 0; }
+.label { display: inline-flex; align-items: center; gap: 10px; margin: 0; font: 700 14px/1.2 var(--mono); letter-spacing: .16em; color: var(--yellow); text-transform: uppercase; }
+.label::before { content: ""; width: 10px; height: 10px; background: var(--yellow); }
+.hero { position: relative; min-height: calc(100svh - 66px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; border-bottom: 4px solid var(--yellow); }
+.hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.5) brightness(.42) contrast(1.1); }
+.hero .wrap { position: relative; z-index: 1; padding-block: 72px 56px; display: grid; gap: 28px; }
+.hero .label { font-size: clamp(14px, 1.6vw, 20px); }
+h1 { margin: 0; font: 900 clamp(38px, 10.4vw, 168px)/.92 var(--display); text-transform: uppercase; letter-spacing: -.01em; }
+h1 .hl { display: inline-block; background: var(--yellow); color: var(--black); padding: .04em .12em 0; margin-top: .06em; box-shadow: .08em .08em 0 var(--ink); }
+.hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.tag { margin: 0; font: 700 clamp(18px, 2vw, 26px)/1.4 var(--mono); }
+.tag em { font-style: normal; color: var(--yellow); }
+.ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+.meta { margin: 0; font-size: 14px; color: var(--dim); }
+.tiles { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+.tile { position: relative; aspect-ratio: 1; display: grid; place-items: center; border: 3px solid var(--ink); }
+.tile svg.face { width: 62%; height: 62%; }
+.tile .badge { position: absolute; top: 6px; left: 6px; width: 28px; height: 28px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center;
+  font: 900 15px/1 var(--display); color: var(--black); }
+.tile.bot { border-color: var(--yellow); }
+@media (max-width: 700px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } .tile .badge { width: 22px; height: 22px; font-size: 12px; } }
 
-section { padding-block: 88px; }
-h2 { margin: 0 0 8px; font: 700 clamp(30px, 4.4vw, 46px)/1.05 var(--display); letter-spacing: .12em; text-transform: uppercase; text-wrap: balance; }
-.lede { color: var(--dim); max-width: 62ch; margin: 0; }
+section { padding-block: 88px; border-top: 2px solid var(--line); }
+h2 { margin: 14px 0 12px; font: 900 clamp(30px, 4.4vw, 52px)/1.05 var(--display); text-transform: uppercase; text-wrap: balance; }
+h2 em { font-style: normal; color: var(--yellow); }
+.lede { color: var(--dim); max-width: 64ch; margin: 0; font-size: 17px; }
 
-/* trailer: letterboxed like the film */
-.trailer { background: #000; }
-.screen { margin-top: 28px; border-radius: 6px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; max-width: 100%; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+/* trailer */
+.screen { margin-top: 36px; border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--yellow); background: #000; aspect-ratio: 16 / 9; }
 .screen video { width: 100%; height: 100%; object-fit: contain; }
 
-/* the premise: a 24 h day in the building */
-.premise { background: var(--wall); }
-.day { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px; margin-top: 40px; border-radius: 6px; overflow: hidden; }
-.slot { background: var(--glass); padding: 24px 22px 26px; display: grid; gap: 8px; align-content: start; min-width: 0; }
-.clock { font: 30px/1 var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; }
-.slot.night .clock { color: var(--alarm); }
-.slot h3 { margin: 0; font: 700 20px/1.2 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+/* premise: a day in the building */
+.day { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 44px; }
+.slot { background: var(--panel); border: 3px solid var(--ink); padding: 26px 24px 28px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.clock { font: 900 34px/1 var(--display); color: var(--yellow); font-variant-numeric: tabular-nums; }
+.slot.night { background: #000; }
+.slot.night .clock { color: var(--red); }
+.slot h3 { margin: 0; font: 900 19px/1.2 var(--display); text-transform: uppercase; }
 .slot p { margin: 0; color: var(--dim); font-size: 15px; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+.rule { display: flex; gap: 18px; align-items: center; padding: 20px 24px; background: var(--panel); border: 3px solid var(--ink); }
+.rule b { display: block; font: 900 20px/1.2 var(--display); text-transform: uppercase; }
+.rule.humans { box-shadow: 8px 8px 0 var(--yellow); }
+.rule.humans b { color: var(--yellow); }
+.rule.ai { box-shadow: 8px 8px 0 var(--red); }
+.rule.ai b { color: var(--red); }
+.rule span { color: var(--dim); font-size: 15px; }
+
+/* premise on yellow */
+#premise { background: var(--yellow); color: var(--black); border-top: 0; }
+#premise .label { color: var(--black); }
+#premise .label::before { background: var(--black); }
+#premise h2 em { color: var(--yellow); background: var(--black); padding: 0 .15em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+#premise .lede { color: #2b2810; }
+#premise .slot { background: var(--black); color: var(--ink); border-color: var(--black); }
+#premise .slot.night { background: #000; }
+#premise .rule { background: var(--black); color: var(--ink); border-color: var(--black); }
+#premise .rule.humans { box-shadow: 8px 8px 0 var(--ink); }
 
 /* gallery */
-.shots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 36px; }
-.shots figure { margin: 0; position: relative; overflow: hidden; border-radius: 4px; background: var(--glass); grid-column: span 2; }
+.shots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-top: 40px; }
+.shots figure { margin: 0; position: relative; overflow: hidden; border: 3px solid var(--ink); background: var(--deep); grid-column: span 2; }
 .shots figure.wide { grid-column: span 3; }
-.shots img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; transition: transform .6s ease; }
-.shots figure:hover img { transform: scale(1.04); }
-.shots figcaption { position: absolute; left: 10px; bottom: 8px; font: 12px/1 var(--mono); letter-spacing: .14em; color: var(--ink);
-  text-transform: uppercase; text-shadow: 0 1px 6px #000; }
+.shots img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.shots figcaption { position: absolute; left: 0; bottom: 0; background: var(--black); padding: 6px 10px; font: 700 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.shots figure:hover { border-color: var(--yellow); }
+.shots figure:hover figcaption { background: var(--yellow); color: var(--black); }
 @media (max-width: 760px) { .shots { grid-template-columns: 1fr 1fr; } .shots figure, .shots figure.wide { grid-column: span 1; } }
 
-/* report form: styled like an in-game notification panel */
-.report { background: var(--wall); }
-.report .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 48px; align-items: start; }
-@media (max-width: 860px) { .report .grid { grid-template-columns: 1fr; gap: 28px; } }
-.notes { display: grid; gap: 10px; margin-top: 26px; }
-.notif { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; background: var(--glass); border-radius: 10px; padding: 12px 14px; }
-.avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 700 14px/1 var(--display); color: #fff; }
+/* discord */
+.discord { background: var(--yellow); color: var(--black); border-top: 0; padding-block: 56px; }
+.discord .wrap { display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+.discord h2 { margin: 0; }
+.discord p { margin: 8px 0 0; font-size: 17px; }
+.discord .btn { background: var(--black); color: var(--yellow); border-color: var(--black); box-shadow: 6px 6px 0 var(--ink); }
+.discord .btn:hover { transform: translate(2px, 2px); box-shadow: 4px 4px 0 var(--ink); }
+
+/* report form */
+.report .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 56px; align-items: start; }
+@media (max-width: 860px) { .report .grid { grid-template-columns: 1fr; gap: 32px; } }
+.notes { display: grid; gap: 10px; margin-top: 28px; }
+.notif { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: center; background: var(--panel); border: 2px solid var(--line); padding: 12px 14px; }
+.avatar { width: 38px; height: 38px; display: grid; place-items: center; font: 900 15px/1 var(--display); color: var(--black); background: var(--ink); }
+.avatar.ai { background: var(--yellow); }
 .notif b { display: block; font-size: 14px; }
 .notif span { font-size: 13px; color: var(--dim); }
-form { background: var(--glass); border-radius: 10px; padding: 26px; display: grid; gap: 18px; }
-.kinds { display: flex; gap: 8px; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
-.kinds legend { font: 12px/1 var(--mono); letter-spacing: .16em; color: var(--dim); text-transform: uppercase; margin-bottom: 10px; padding: 0; }
+form { background: var(--panel); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--yellow); padding: 28px; display: grid; gap: 20px; }
+.kinds { display: flex; gap: 10px; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+.kinds legend { font: 700 12px/1 var(--mono); letter-spacing: .14em; color: var(--dim); text-transform: uppercase; margin-bottom: 12px; padding: 0; }
 .kinds input { position: absolute; opacity: 0; pointer-events: none; }
-.kinds label { padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(242,239,232,.25); font: 700 14px/1 var(--display); letter-spacing: .16em;
-  text-transform: uppercase; cursor: pointer; color: var(--dim); }
-.kinds input:checked + label { background: var(--neon); border-color: var(--neon); color: #1a0716; }
-.kinds input:focus-visible + label { outline: 2px solid var(--neon); outline-offset: 3px; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.kinds label { min-height: 48px; display: inline-flex; align-items: center; padding: 0 18px; border: 3px solid var(--ink); font: 900 14px/1 var(--display); text-transform: uppercase; cursor: pointer; }
+.kinds input:checked + label { background: var(--yellow); border-color: var(--yellow); color: var(--black); }
+.kinds input:focus-visible + label { outline: 3px solid var(--yellow); outline-offset: 3px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
-.field { display: grid; gap: 6px; min-width: 0; }
-.field label { font: 12px/1 var(--mono); letter-spacing: .16em; color: var(--dim); text-transform: uppercase; }
+.field { display: grid; gap: 8px; min-width: 0; }
+.field label { font: 700 12px/1 var(--mono); letter-spacing: .14em; color: var(--dim); text-transform: uppercase; }
 .field small { color: var(--dim); font-size: 12px; }
-input[type=text], input[type=email], select, textarea { width: 100%; background: var(--wall); color: var(--ink); border: 1px solid rgba(242,239,232,.16);
-  border-radius: 6px; padding: 12px 14px; font: 15px/1.4 var(--body); }
+input[type=text], input[type=email], select, textarea { width: 100%; background: var(--black); color: var(--ink); border: 2px solid var(--line);
+  border-radius: 0; padding: 12px 14px; font: 15px/1.4 var(--mono); }
 textarea { min-height: 130px; resize: vertical; }
-input:focus, select:focus, textarea:focus { border-color: var(--neon); outline: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--yellow); outline: none; }
 .hp { position: absolute; left: -9999px; }
-.send { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.send { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 .status { font: 14px/1.4 var(--mono); color: var(--dim); }
-.status.ok { color: var(--cyan); }
-.status.err { color: var(--alarm); }
+.status.ok { color: var(--yellow); }
+.status.err { color: #ff6b5c; }
 
-footer { padding-block: 48px 64px; border-top: 1px solid rgba(242,239,232,.08); }
-footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; color: var(--dim); font-size: 14px; }
-footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em; }
+footer { padding-block: 40px 56px; border-top: 2px solid var(--line); }
+footer .wrap { display: flex; justify-content: center; color: var(--ink); font-size: 15px; }
+footer b { color: var(--ink); font-family: var(--display); }
+footer .tagline { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -139,34 +173,48 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
   <div class="wrap">
     <a class="brand" href="#top">PERFECTLY HUMAN</a>
     <nav aria-label="Sections">
-      <a href="#trailer">Trailer</a>
-      <a href="#premise">The game</a>
-      <a href="#shots">Screens</a>
-      <a href="#report">Report a bug</a>
-      <a href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Download</a>
+      <a class="hide-sm" href="#trailer">Trailer</a>
+      <a class="hide-sm" href="#premise">The game</a>
+      <a class="hide-sm" href="#shots">Screens</a>
+      <a class="hide-sm" href="#report">Report a bug</a>
+      <a class="play" href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Play</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
   <div class="hero">
-    <img src="img/hero.jpg" alt="The tower at night, lit windows among the neon city">
+    <img src="img/hero.jpg" alt="">
     <div class="wrap">
-      <p class="eyebrow">2044 · Sanitary lockdown</p>
-      <h1>PERFECTLY HUMAN</h1>
-      <p class="tag">6 players. <em>1 AI is among them.</em></p>
-      <div class="ctas">
-        <a class="btn primary" href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Download on itch.io</a>
-        <a class="btn ghost" href="#trailer">▶ Watch the trailer</a>
+      <p class="label">Select all humans:</p>
+      <h1>Perfectly<br><span class="hl">Human</span></h1>
+      <div class="tiles" aria-hidden="true">
+        <div class="tile" style="background:#d9622b"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile" style="background:#2f5d8a"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile" style="background:#3d7a4c"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile" style="background:#8a2e3b"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile" style="background:#5b4b8a"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile bot" style="background:#2e7d7a"><svg class="face" viewBox="0 0 56 56"><line x1="28" y1="5" x2="28" y2="12" stroke="#f4f0e6" stroke-width="3"/><circle cx="28" cy="5" r="3" fill="#efdf4a"/><rect x="9" y="12" width="38" height="34" rx="5" fill="#f4f0e6"/><rect x="5" y="23" width="4" height="12" fill="#f4f0e6"/><rect x="47" y="23" width="4" height="12" fill="#f4f0e6"/><rect x="16" y="21" width="8" height="8" fill="#111"/><rect x="32" y="21" width="8" height="8" fill="#111"/><path d="M18 37 h20 M22 34 v6 M28 34 v6 M34 34 v6" stroke="#111" stroke-width="2.4"/></svg><span class="badge">?</span></div>
+        <div class="tile" style="background:#b5523b"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
+        <div class="tile" style="background:#46505e"><svg class="face" viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#f4f0e6"/><circle cx="20" cy="25" r="2.8" fill="#111"/><circle cx="36" cy="25" r="2.8" fill="#111"/><path d="M20 35 Q 28 40 36 35" stroke="#111" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg><span class="badge">✓</span></div>
       </div>
-      <p class="meta">Multiplayer game · macOS &amp; Windows · Demo 0.1.0</p>
+      <div class="hero-row">
+        <p class="tag">Up to 12 strangers.<br><em>Some of them are AI.</em></p>
+        <div class="ctas">
+          <a class="btn primary" href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">Play now
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 26 26"><path d="M4 13 h17 M14 6 l7 7 l-7 7" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn" href="#trailer">▶ Trailer</a>
+        </div>
+      </div>
+      <p class="meta">2044 · Sanitary lockdown · Anonymous multiplayer · In your browser, macOS &amp; Windows</p>
     </div>
   </div>
 
-  <section class="trailer" id="trailer">
+  <section id="trailer">
     <div class="wrap">
-      <h2>Trailer</h2>
-      <p class="lede">Can you tell a human from an AI? Demo on <a href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">itch.io</a>, for macOS and Windows.</p>
+      <p class="label">Trailer</p>
+      <h2>Can you tell a human <em>from an AI?</em></h2>
+      <p class="lede">Play it now on <a href="https://avestastudio.itch.io/perfectly-human" target="_blank" rel="noopener">itch.io</a>, in your browser or on macOS and Windows.</p>
       <div class="screen">
         <video id="trailerVideo" controls preload="metadata" poster="img/guilty.jpg" playsinline>
           <source src="media/trailer.mp4" type="video/mp4">
@@ -175,25 +223,37 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
     </div>
   </section>
 
-  <section class="premise" id="premise">
+  <section id="premise">
     <div class="wrap">
-      <h2>Everyone stays home.<br>Not everyone is real.</h2>
-      <p class="lede">Six residents share a tower during a sanitary lockdown. One of them is an AI trying to pass as human, and trying to replace the others. Talk, watch, accuse, and vote before the lights go out.</p>
+      <p class="label">The game</p>
+      <h2>Everyone stays home.<br><em>Not everyone is real.</em></h2>
+      <p class="lede">6 to 12 strangers share a tower during a sanitary lockdown. 1 to 3 of them are AI trying to pass as human, and trying to replace the others. You never type: pick what to say and a tone. Talk, watch, accuse, and vote before the lights go out.</p>
       <div class="day">
         <div class="slot"><span class="clock">07:40</span><h3>Live your day</h3><p>Messages from the neighbours, a drink from the fridge, a visitor at the door. Act human. Everyone is watching.</p></div>
         <div class="slot"><span class="clock">14:00</span><h3>Read the signs</h3><p>Who was up at 3 a.m.? Who answers too fast? Who never sleeps? Collect what doesn't add up.</p></div>
         <div class="slot"><span class="clock">20:00</span><h3>Mandatory meeting</h3><p>The whole building meets. Accuse, defend yourself, vote. Get it wrong and an innocent resident pays.</p></div>
         <div class="slot night"><span class="clock">03:14</span><h3>Lights out</h3><p>At night the AI moves. Doors get kicked in, the power goes down, and the chat fills with panic.</p></div>
       </div>
+      <div class="rules">
+        <div class="rule humans">
+          <svg aria-hidden="true" width="52" height="52" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26" fill="#f4f0e6"/><circle cx="19" cy="23" r="3.6" fill="#111"/><circle cx="37" cy="23" r="3.6" fill="#111"/><path d="M17 34 Q 28 44 39 34" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+          <div><b>Humans win</b><span>Every AI voted out, or the lockdown ends.</span></div>
+        </div>
+        <div class="rule ai">
+          <svg aria-hidden="true" width="52" height="52" viewBox="0 0 56 56"><line x1="28" y1="5" x2="28" y2="12" stroke="#d93a2b" stroke-width="3"/><circle cx="28" cy="5" r="3" fill="#d93a2b"/><rect x="9" y="12" width="38" height="34" rx="5" fill="#d93a2b"/><rect x="5" y="23" width="4" height="12" fill="#d93a2b"/><rect x="47" y="23" width="4" height="12" fill="#d93a2b"/><rect x="16" y="21" width="8" height="8" fill="#111"/><rect x="32" y="21" width="8" height="8" fill="#111"/><path d="M18 37 h20 M22 34 v6 M28 34 v6 M34 34 v6" stroke="#111" stroke-width="2.4"/></svg>
+          <div><b>The AI wins</b><span>Only one human is left.</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="shots">
     <div class="wrap">
-      <h2>Screens</h2>
+      <p class="label">Screens</p>
+      <h2>Inside the building</h2>
       <p class="lede">Stills from the trailer, all filmed in the game's own building.</p>
       <div class="shots">
-        <figure class="wide"><img src="img/party.jpg" alt="Four residents dancing at the neon rooftop pool" loading="lazy"><figcaption>Rooftop pool</figcaption></figure>
+        <figure class="wide"><img src="img/party.jpg" alt="Four residents dancing at the rooftop pool" loading="lazy"><figcaption>Rooftop pool</figcaption></figure>
         <figure class="wide"><img src="img/meeting.jpg" alt="Residents pointing at each other in the meeting room" loading="lazy"><figcaption>8 PM meeting</figcaption></figure>
         <figure><img src="img/morning.jpg" alt="A resident at her bedroom window in the morning" loading="lazy"><figcaption>Morning</figcaption></figure>
         <figure><img src="img/visitor.jpg" alt="A neighbour at the apartment door" loading="lazy"><figcaption>A visitor</figcaption></figure>
@@ -205,15 +265,27 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
     </div>
   </section>
 
+  <section class="discord">
+    <div class="wrap">
+      <div>
+        <h2>Join the Discord</h2>
+        <p>Find other residents, share theories, hear the news first.</p>
+      </div>
+      <a class="btn" href="https://discord.gg/p5uHqYBwcW" target="_blank" rel="noopener">Discord
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 26 26"><path d="M4 13 h17 M14 6 l7 7 l-7 7" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </section>
+
   <section class="report" id="report">
     <div class="wrap grid">
       <div>
-        <h2>Report a bug</h2>
-        <p class="lede">The demo is early and experimental. Tell us what broke, what felt wrong, or what you would love to see. Every message is read by the team.</p>
+        <p class="label">Report a bug</p>
+        <h2>Something broke?</h2>
+        <p class="lede">The game is early and experimental. Tell us what broke, what felt wrong, or what you would love to see. Every message is read.</p>
         <div class="notes" aria-hidden="true">
-          <div class="notif"><span class="avatar" style="background:#c0508f">R</span><div><b>Rose (4)</b><span>my door opened by itself??</span></div></div>
-          <div class="notif"><span class="avatar" style="background:#6b62c9">C</span><div><b>Chloe (7)</b><span>the vote froze on my screen</span></div></div>
-          <div class="notif"><span class="avatar" style="background:#4f9a6b">M</span><div><b>Max (5)</b><span>report it. NOW.</span></div></div>
+          <div class="notif"><span class="avatar">R</span><div><b>Rose (4)</b><span>my door opened by itself??</span></div></div>
+          <div class="notif"><span class="avatar">C</span><div><b>Chloe (7)</b><span>the vote froze on my screen</span></div></div>
+          <div class="notif"><span class="avatar ai">M</span><div><b>Max (5)</b><span>report it. NOW.</span></div></div>
         </div>
       </div>
 
@@ -232,7 +304,7 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
 
         <div class="row">
           <div class="field"><label for="f-platform">Platform</label>
-            <select id="f-platform" name="platform"><option>Windows</option><option>macOS</option><option>Other</option></select></div>
+            <select id="f-platform" name="platform"><option>Browser</option><option>Windows</option><option>macOS</option><option>Other</option></select></div>
           <div class="field"><label for="f-version">Version</label>
             <select id="f-version" name="version"><option>Demo 0.1.0</option><option>I don't know</option></select></div>
         </div>
@@ -257,8 +329,7 @@ footer b { color: var(--ink); font-family: var(--display); letter-spacing: .2em;
 
 <footer>
   <div class="wrap">
-    <span><b>AVESTA STUDIO</b> · Design Lena Guayroso · Story Scott Carroll</span>
-    <span>Graphics: <a href="https://assetstore.unity.com/publishers/53539" rel="noopener" target="_blank">ithappy assets</a> · 3D hair: McKaneCL, aeo (CC BY 4.0) · Animations: Mixamo</span>
+    <span>avestastudio🩷</span>
   </div>
 </footer>
 
